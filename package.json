@@ -1,0 +1,38 @@
+{
+  "name": "nested-combine-reducers",
+  "version": "1.0.0",
+  "description": "Adds support for nesting in the combineReducers utility method from Redux",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --project tsconfig.publishing.json",
+    "test": "tsc --project tsconfig.tests.json && mocha dist/index.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/federico-paolillo/nested-combine-reducers.git"
+  },
+  "keywords": [
+    "redux",
+    "utility",
+    "combine",
+    "reducers",
+    "nested",
+    "deep",
+    "combineReducers"
+  ],
+  "author": "Federico Paolillo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/federico-paolillo/nested-combine-reducers/issues"
+  },
+  "homepage": "https://github.com/federico-paolillo/nested-combine-reducers#readme",
+  "devDependencies": {
+    "@types/chai": "^4.1.3",
+    "@types/mocha": "^5.2.0",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "redux": "^4.0.0",
+    "typescript": "^2.8.3"
+  }
+}
