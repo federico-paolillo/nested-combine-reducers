@@ -1,12 +1,11 @@
-import { combineReducers as reduxCombineReducers } from 'redux';
-
 import * as chai from 'chai';
+import { combineReducers as reduxCombineReducers, combineReducers } from 'redux';
 
 import { nestedCombineReducers } from '.';
 
 const assert = chai.assert;
 
-describe('Core', function () {
+describe('nestedCombineReducers', function () {
 
     it('Ignores null or undefined properties on the nested Reducers Map', function () {
 
@@ -36,11 +35,7 @@ describe('Core', function () {
 
     });
 
-});
-
-describe('Redux support', function () {
-
-    it('Creates a root Reducer that returns an Object with a shape identical to the nested Reducers Map shape', function () {
+    it('Creates a root Reducer from a nested map using combineReducers from Redux', function () {
 
         //These Reducers do not do anything. 
         //We only expect that the final Root Reducer returns an object identical to the nested Reducers Map shape
@@ -67,6 +62,50 @@ describe('Redux support', function () {
         const computedState = rootReducer({}, { type: 'FAKE' });
 
         assert.deepEqual(computedState, expectedState);
+
+    });
+
+    it('Creates a root Reducer correctly when there is no nesting', function () {
+
+        const simpleReducersMap = {
+            slice: () => 'Slice',
+            anotherSlice: () => 'Another slice'
+        };
+
+        const rootReducer = nestedCombineReducers(simpleReducersMap, reduxCombineReducers);
+
+        const expectedState = {
+            slice: 'Slice',
+            anotherSlice: 'Another slice'
+        };
+
+        const computedState = rootReducer({}, { type: 'Fake' });
+
+        assert.deepEqual(computedState, expectedState);
+    });
+
+    it('Throws an error when the combineReducers function is undefined', function() {
+
+        const simpleReducersMap = {
+            slice: () => 'Slice',
+            anotherSlice: () => 'Another slice'
+        };
+
+        const combineReducersFn: any = undefined;
+
+        const nestedCombineReducersArrowFn = () => nestedCombineReducers(simpleReducersMap, combineReducersFn);
+
+        assert.throws(nestedCombineReducersArrowFn);
+
+    });
+
+    it('Throws an error when the reducers map is undefined', function() {
+
+        const undefinedReducersMap: any = undefined;
+
+        const nestedCombineReducersArrowFn = () => nestedCombineReducers(undefinedReducersMap, combineReducers);
+
+        assert.throws(nestedCombineReducersArrowFn);
 
     });
 

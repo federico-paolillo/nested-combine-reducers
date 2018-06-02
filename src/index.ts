@@ -1,31 +1,55 @@
+/**
+ * The simplest definition of an Action
+ */
 export interface Action<T = any> {
     type: T;
 }
 
-export type Reducer<S = any, A extends Action = Action> = (state: S | undefined, action: A) => S;
-
+/**
+ * An object whose properties are reducing functions.
+ */
 export type ReducersMap<S = any, A extends Action = Action> = {
     [prop in keyof S]: Reducer<S[prop], A>;
 }
 
+/**
+ * An object whose properties are either reducing function or @see NestedReducersMap
+ */
 export type NestedReducersMap<S = any, A extends Action = Action> = {
     [prop in keyof S]: Reducer<S[prop], A> | NestedReducersMap<S[prop], A>
 }
 
+/**
+ * A reducing function
+ */
+export type Reducer<S = any, A extends Action = Action> = (state: S | undefined, action: A) => S;
+
+/**
+ * A function that turns an object whose properties are reducing functions into a single reducing function.
+ */
 export type CombineReducersFn<S = any, A extends Action = Action> = (reducersMap: ReducersMap<S, A>) => Reducer<S, A>
 
+/**
+ * Takes a Reducers maps with multiple levels of nesting and turns it into in a single reducing function.
+ * 
+ * @param map An object whose values are either reducing functions or other objects
+ * @param combineReducersFn combineReducers compatible function provided by your library of choice
+ */
 export function nestedCombineReducers<S = any, A extends Action = Action>(
-    reducersMap: NestedReducersMap<S, A>,
-    combineReducers: CombineReducersFn<S, A>
+    map: NestedReducersMap<S, A>,
+    combineReducersFn: CombineReducersFn<S, A>
 ): Reducer<S, A> {
+
+    if (!combineReducersFn) throw new Error('You must specify a combineReducers function.');
+    if (!map) throw new Error('You must specify a reducers map.');
 
     let flatMap: any = {};
 
-    const mapKeys = Object.keys(reducersMap);
+    const mapKeys = Object.keys(map);
 
     for (const mapKey of mapKeys) {
 
-        const propValue = reducersMap[mapKey];
+        const propValue = map[mapKey];
 
         if (propValue === null) continue;
         if (typeof propValue === 'undefined') continue;
@@ -37,11 +61,11 @@ export function nestedCombineReducers<S = any, A extends Action = Action>(
 
         //Nesting found, let's go deeper !
         if (typeof propValue === 'object') {
-            flatMap[mapKey] = nestedCombineReducers(propValue, combineReducers);
+            flatMap[mapKey] = nestedCombineReducers(propValue, combineReducersFn);
         }
 
     }
 
-    return combineReducers(flatMap);
+    return combineReducersFn(flatMap);
 
 }
