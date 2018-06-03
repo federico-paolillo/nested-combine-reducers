@@ -52,7 +52,7 @@ const rootReducer = nestedCombineReducers({
 
 With nestedCombineReducers it should be a bit more clear what the state shape looks like when your are creating the root reducer or any slice reducer.
 
-Keep in mind that you could use nestedCombineReducers to create a slice reducer that will be combined in a root reducer with the usual combineReducers, nestedCombineReducers is not meant to be used only to create the root reducer.
+Keep in mind that you could use nestedCombineReducers to create slice reducers only and combine them in a root reducer with the usual combineReducers, *nestedCombineReducers is not meant to be used to create the root reducer only*.
 
 # Requirements
 Minimum ECMAScript version required is ECMAScript 2015 (ES6)
@@ -67,7 +67,7 @@ Code example:
 
 ```javascript
 import { nestedCombineReducers } from 'nested-combine-reducers';
-import { combineReducers } from 'redux;
+import { combineReducers } from 'redux';
 
 const someNestedReducersMap = {
     ui: {
