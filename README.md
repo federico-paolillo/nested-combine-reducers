@@ -64,11 +64,35 @@ Import *nestedCombineReducers* from 'nested-combine-reducers'.
 Import a combineReducers function from some library.  
 Call nestedCombineReducers passing in your reducers map and your combineReducers function.  
 
-Code example:
+Code example using ECMAScript 2015 (ES6) modules:
 
 ```javascript
 import { combineReducers } from 'redux';
-import nestedCombineReducers from 'nested-combine-reducers';
+import { nestedCombineReducers } from 'nested-combine-reducers';
+
+const someNestedReducersMap = {
+    ui: {
+        spinner: spinnerReducer
+    },
+    data: {
+        posts: {
+            items: postItemsReducer,
+            favourites: favouritePostsReducer
+        },
+        comments: {
+            ...
+        }
+    }
+}
+
+const rootReducer = nestedCombineReducers(someNestedReducersMap, combineReducers);
+```
+
+Code example using CommonJS:
+
+```javascript
+const { combineReducers } = require('redux');
+const { nestedCombineReducers } = require('nested-combine-reducers');
 
 const someNestedReducersMap = {
     ui: {
