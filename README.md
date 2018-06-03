@@ -1,3 +1,7 @@
+[![MIT License](https://img.shields.io/github/license/federico-paolillo/nested-combine-reducers.svg?style=flat-square)](https://github.com/federico-paolillo/nested-combine-reducers/blob/master/LICENSE)
+[![Travis branch](https://img.shields.io/travis/federico-paolillo/nested-combine-reducers/master.svg?style=flat-square)](https://travis-ci.org/federico-paolillo/nested-combine-reducers)
+[![NPM](https://img.shields.io/npm/v/nested-combine-reducers.svg?style=flat-square)](https://www.npmjs.com/package/nested-combine-reducers)
+
 # nested-combine-reducers
 Adds support for nesting in any compatible combineReducers function.  
 No dependencies and no assumptions on which Redux like library you are using.  
