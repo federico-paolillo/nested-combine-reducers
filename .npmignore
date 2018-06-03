@@ -1,6 +1,7 @@
 src/
 wallaby.js
 package-lock.json
+.travis.yml
 *.spec.js
 *.spec.d.ts
 tsconfig*.json
