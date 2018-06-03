@@ -1,2 +1,6 @@
 src/
 wallaby.js
+package-lock.json
+*.spec.js
+*.spec.d.ts
+tsconfig*.json

@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "tsc": "tsc",
     "build": "tsc --project tsconfig.publishing.json",
     "test": "tsc --project tsconfig.tests.json && mocha dist/index.spec.js"
   },
@@ -33,6 +34,6 @@
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
     "redux": "^4.0.0",
-    "typescript": "^2.8.3"
+    "typescript": "^2.9.1"
   }
 }
