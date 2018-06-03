@@ -1,2 +1,100 @@
 # nested-combine-reducers
-Adds support for nesting in the combineReducers utility method from Redux or any other compatible combineReducers utility method.
+Adds support for nesting in combineReducers utility function from Redux or any other compatible combineReducers function.
+No dependencies and no assumptions on which Redux like library you are using.
+
+# Why ?
+Tipically you divide your state tree in multiple slices, each handled by its own reducer.
+For example:
+
+```typescript
+const reducers = {
+    ui: uiReducer,
+    data: dataReducer
+};
+```
+But if you want to further split your slices in even more slices you would have to do:
+
+```javascript
+const postsReducer = combineReducers({
+    items: itemsReducer,
+    favourites: favouritePostsReducer
+});
+
+const commentsReducer = ...;
+
+const dataReducer = combineReducers({
+    posts: postsReducer,
+    comments: commentsReducer
+});
+
+const rootReducer = combineReducers({
+    data: dataReducer,
+});
+```
+
+As you can see you have to call manually combineReducers multiple times, *potentially losing the overview of your state shape*.
+In fact from the example above it is not immediately obvious what the state shape looks like.
+This library tries to simplify this workflow by allowing you to specify a reducers map with nested reducing functions.
+
+The example above with nestedCombineReducers would become:
+
+```javascript
+const rootReducer = nestedCombineReducers({
+    data: {
+        posts: {
+            items: itemsReducer,
+            favourites: favouritePostsReducer
+        },
+        comments: ...
+    }
+})
+```
+
+With nestedCombineReducers it should be a bit more clear what the state shape looks like when your are creating the root reducer or any slice reducer.
+
+Keep in mind that you could use nestedCombineReducers to create a slice reducer that will be combined in a root reducer with the usual combineReducers, nestedCombineReducers is not meant to be used only to create the root reducer.
+
+# Requirements
+Minimum ECMAScript version required is ECMAScript 2015 (ES6)
+Provides typings for Typescript and it is also written in Typescript.
+
+# How do I use it ?
+Import *nestedCombineReducers* from 'nested-combine-reducers'.
+Import a combineReducers function from some library.
+Call nestedCombineReducers passing in your reducers map and your combineReducers function.
+
+Code example:
+
+```javascript
+import { nestedCombineReducers } from 'nested-combine-reducers';
+import { combineReducers } from 'redux;
+
+const someNestedReducersMap = {
+    ui: {
+        spinner: spinnerReducer
+    },
+    data: {
+        posts: {
+            items: postItemsReducer,
+            favourites: favouritePostsReducer
+        },
+        comments: {
+            ...
+        }
+    }
+}
+
+const rootReducer = nestedCombineReducers(someNestedReducersMap, combineReducers);
+```
+
+# Supported combineReducers functions
+For every 'officially supported' library there will be a test called *Creates a root Reducer from a nested map using combineReducers from X* where X is a particular library.
+
+Currently the combineReducers functions from the following libraries are supported or *will* be supported:
+
+- [X] Redux
+- [ ] @ngrx/store
+
+# Limitations
+The first obvious limitation is that for **very** deeply nested objects the recursive approach of nestedCombineReducers will ultimately fails with a stack overflow error, although the chances that you might encounter or create such complicated state shape are very low.
+Another limitation is that circular references in the reducers map will also lead to a stack overflow error, but having circular references in your state tree is no supported by any Redux like library that I know of.
