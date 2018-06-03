@@ -47,7 +47,7 @@ const rootReducer = nestedCombineReducers({
         },
         comments: ...
     }
-})
+}, combineReducers);
 ```
 
 With nestedCombineReducers it should be a bit more clear what the state shape looks like when your are creating the root reducer or any slice reducer.  
