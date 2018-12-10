@@ -10,8 +10,8 @@
     "test": "tsc --project tsconfig.tests.json && mocha dist/index.spec.js"
   },
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/federico-paolillo/nested-combine-reducers.git"
+    "url": "https://github.com/federico-paolillo/nested-combine-reducers.git",
+    "type": "git"
   },
   "keywords": [
     "redux",
@@ -29,11 +29,11 @@
   },
   "homepage": "https://github.com/federico-paolillo/nested-combine-reducers#readme",
   "devDependencies": {
-    "@types/chai": "^4.1.3",
-    "@types/mocha": "^5.2.0",
-    "chai": "^4.1.2",
-    "mocha": "^5.2.0",
-    "redux": "^4.0.0",
-    "typescript": "^2.9.1"
+    "@types/chai": "latest",
+    "@types/mocha": "latest",
+    "chai": "latest",
+    "mocha": "latest",
+    "typescript": "latest",
+    "redux": "latest"
   }
 }

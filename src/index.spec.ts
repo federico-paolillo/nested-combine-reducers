@@ -1,5 +1,5 @@
 import * as chai from 'chai';
-import { combineReducers as reduxCombineReducers, combineReducers } from 'redux';
+import { combineReducers as reduxCombineReducers } from 'redux';
 
 import { nestedCombineReducers } from '.';
 
@@ -103,7 +103,7 @@ describe('nestedCombineReducers', function () {
 
         const undefinedReducersMap: any = undefined;
 
-        const nestedCombineReducersArrowFn = () => nestedCombineReducers(undefinedReducersMap, combineReducers);
+        const nestedCombineReducersArrowFn = () => nestedCombineReducers(undefinedReducersMap, reduxCombineReducers);
 
         assert.throws(nestedCombineReducersArrowFn);
 

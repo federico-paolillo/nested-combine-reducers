@@ -115,15 +115,6 @@ const someNestedReducersMap = {
 
 const rootReducer = nestedCombineReducers(someNestedReducersMap, combineReducers);
 ```
-
-# Supported combineReducers functions
-For every 'officially supported' library there will be a test called *Creates a root Reducer from a nested map using combineReducers from X* where X is a particular library.  
-
-Currently the combineReducers functions from the following libraries are supported or *will* be supported:
-
-- [X] Redux
-- [ ] @ngrx/store
-
 # Limitations
 The first obvious limitation is that for **very** deeply nested objects the recursive approach of nestedCombineReducers will ultimately fails with a stack overflow error, although the chances that you might encounter or create such complicated state shape are very low.  
-Another limitation is that circular references in the reducers map will also lead to a stack overflow error, but having circular references in your state tree is no supported by any Redux like library that I know of.
+Another limitation is that circular references in the reducers map will also lead to a stack overflow errors, but having circular references in your state tree is not supported by any Redux like library that I know of.
