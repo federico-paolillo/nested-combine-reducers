@@ -30,6 +30,18 @@ export type Reducer<S = any, A extends Action = Action> = (state: S | undefined,
 export type CombineReducersFn<S = any, A extends Action = Action> = (reducersMap: ReducersMap<S, A>) => Reducer<S, A>
 
 /**
+ * Execution data recorded to resume a partial execution later on
+ */
+interface StackFrame {
+
+	flatMap: object;
+
+	mapKeys: string[];
+
+	currentMapKey: number;
+}
+
+/**
  * Takes a Reducers maps with multiple levels of nesting and turns it into in a single reducing function.
  * 
  * @param map An object whose values are either reducing functions or other objects
@@ -42,6 +54,20 @@ export function nestedCombineReducers<S = any, A extends Action = Action>(
 
     if (!combineReducersFn) throw new Error('You must specify a combineReducers function.');
     if (!map) throw new Error('You must specify a reducers map.');
+
+	//Initialize manual Stack with initial values
+	const manualStack: StackFrame[] = [
+		{
+			flatMap: {},
+			mapKeys: Object.keys(map),
+			currentMapKey: 0
+		}
+	];
+
+	//We continue until the manual Stack is drained
+	while (manualStack.length > 0) {
+
+	}
 
     let flatMap: any = {};
 

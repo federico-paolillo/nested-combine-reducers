@@ -62,3 +62,6 @@ typings/
 
 # TS Compiler output
 dist/
+
+.vs/
+.vscode/
