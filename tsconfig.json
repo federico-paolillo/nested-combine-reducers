@@ -22,7 +22,8 @@
     "esModuleInterop": true,
     "downlevelIteration": true,
     "lib": [
-      "es7"
+      "es7",
+      "dom"
     ]
   }
 }

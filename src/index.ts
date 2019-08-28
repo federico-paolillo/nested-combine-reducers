@@ -34,12 +34,33 @@ export type CombineReducersFn<S = any, A extends Action = Action> = (reducersMap
  */
 interface StackFrame {
 
-	flatMap: object;
+    map: object;
 
-	mapKeys: string[];
+    mapKeys: string[];
 
-	currentMapKey: number;
+    currentMapKey: string | null;
+
+    currentMapKeyIndex: number;
+
+    previousMapKey: string | null;
+
+    flatMap: any;
+
+    previousFlatMap: any;
+
 }
+
+/**
+ * Peeks an element from the Stack given.
+ * Peeking means getting the element that you would get with a pop() without actually removing the element from the Stack.
+ */
+// function peek<TElement>(stack: TElement[]): TElement {
+
+//     if (!Array.isArray(stack)) throw new Error('The array-thing passed is not really an Array !');
+//     if (stack.length === 0) throw new Error('You cant peek a Stack that has no elements !');
+
+//     return stack[stack.length - 1];
+// }
 
 /**
  * Takes a Reducers maps with multiple levels of nesting and turns it into in a single reducing function.
@@ -55,43 +76,91 @@ export function nestedCombineReducers<S = any, A extends Action = Action>(
     if (!combineReducersFn) throw new Error('You must specify a combineReducers function.');
     if (!map) throw new Error('You must specify a reducers map.');
 
-	//Initialize manual Stack with initial values
-	const manualStack: StackFrame[] = [
-		{
-			flatMap: {},
-			mapKeys: Object.keys(map),
-			currentMapKey: 0
-		}
-	];
+    const finalFlatMap: any = {};
 
-	//We continue until the manual Stack is drained
-	while (manualStack.length > 0) {
+    //Initialize manual Stack with initial values
 
-	}
+    const manualStack: StackFrame[] = [
+        {
+            map,
+            mapKeys: [],
+            currentMapKey: null,
+            currentMapKeyIndex: 0,
+            flatMap: finalFlatMap,
+            previousMapKey: null,
+            previousFlatMap: {}
+        }
+    ];
 
-    let flatMap: any = {};
+    //We continue until the manual Stack is drained
 
-    const mapKeys = Object.keys(map);
+    while (manualStack.length > 0) {
 
-    for (const mapKey of mapKeys) {
+        const currentStackFrame = manualStack.pop();
 
-        const propValue = map[mapKey];
+        if (typeof currentStackFrame === 'undefined') throw new Error('Got an undefined Stack Frame !');
 
-        if (propValue === null) continue;
-        if (typeof propValue === 'undefined') continue;
+        currentStackFrame.mapKeys = Object.keys(currentStackFrame.map);
 
-        //Hopefully a reducer function, let's store it to combine it later
-        if (typeof propValue === 'function') {
-            flatMap[mapKey] = propValue;
+        for (let index = currentStackFrame.currentMapKeyIndex; index < currentStackFrame.mapKeys.length; index++) {
+
+            currentStackFrame.currentMapKey = currentStackFrame.mapKeys[index];
+            currentStackFrame.currentMapKeyIndex = index;
+
+            console.log(index);
+
+            const propValue = map[currentStackFrame.currentMapKey];
+
+            if (propValue === null) continue;
+            if (typeof propValue === 'undefined') continue;
+
+            //Hopefully a reducer function, let's store it to combine it later
+
+            if (typeof propValue === 'function') {
+                currentStackFrame.flatMap[currentStackFrame.currentMapKey] = propValue;
+            }
+
+            //Nesting found, let's go deeper !
+
+            if (typeof propValue === 'object') {
+
+                //Let's prepare the next Stack Frame to "execute"
+
+                const nextStackFrame: StackFrame = {
+                    map: propValue,
+                    mapKeys: [],
+                    currentMapKey: null,
+                    currentMapKeyIndex: 0,
+                    flatMap: {},
+                    previousMapKey: currentStackFrame.currentMapKey,
+                    previousFlatMap: currentStackFrame.flatMap
+                };
+
+                //Keep this frame on the Stack as it has not finished yet
+                
+                manualStack.push(currentStackFrame);
+
+                //But first run this frame
+
+                manualStack.push(nextStackFrame);
+
+                break;
+
+            }
+
         }
 
-        //Nesting found, let's go deeper !
-        if (typeof propValue === 'object') {
-            flatMap[mapKey] = nestedCombineReducers(propValue, combineReducersFn);
+        //If we have a previousMapKey it means that we left a previous execution incomplete
+        //We have to update previousMapKey location so that the previous execution can resume back with the result
+
+        if (currentStackFrame.previousMapKey) {
+
+            currentStackFrame.previousFlatMap[currentStackFrame.previousMapKey] = combineReducersFn(currentStackFrame.flatMap);
+
         }
 
     }
 
-    return combineReducersFn(flatMap);
+    return combineReducersFn(finalFlatMap);
 
 }
