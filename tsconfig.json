@@ -22,8 +22,7 @@
     "esModuleInterop": true,
     "downlevelIteration": true,
     "lib": [
-      "es7",
-      "dom"
+      "es2015"
     ]
   }
 }

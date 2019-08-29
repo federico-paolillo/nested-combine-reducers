@@ -3,14 +3,16 @@
 [![NPM](https://img.shields.io/npm/v/nested-combine-reducers.svg?style=flat-square)](https://www.npmjs.com/package/nested-combine-reducers)
 
 # nested-combine-reducers
+
 Adds support for nesting in any compatible combineReducers function.  
-No dependencies and no assumptions on which Redux like library you are using.  
+No dependencies and no assumptions on which Redux-like library you are using.  
 
 # Why ?
+
 Tipically you divide your state tree in multiple slices, each handled by its own reducer.  
 For example:
 
-```typescript
+```javascript
 const reducers = {
     ui: uiReducer,
     data: dataReducer
@@ -36,9 +38,9 @@ const rootReducer = combineReducers({
 });
 ```
 
-As you can see you have to call manually combineReducers multiple times, *potentially losing the overview of your state shape*.  
-In fact from the example above it is not immediately obvious what the state shape looks like.  
-This library tries to simplify this workflow by allowing you to specify a reducers map with nested reducing functions.  
+As you can see you have to call manually `combineReducers` multiple times, *potentially losing the overview of your state shape*.  
+In fact from the example above it is not immediately clear what the state shape looks like.  
+This library tries to simplify this workflow by allowing you to use directly a reducers map with nested reducing functions.  
 
 The example above with nestedCombineReducers would become:
 
@@ -54,19 +56,21 @@ const rootReducer = nestedCombineReducers({
 }, combineReducers);
 ```
 
-With nestedCombineReducers it should be a bit more clear what the state shape looks like when your are creating the root reducer or any slice reducer.  
+With `nestedCombineReducers` it should be a bit more clear what the state shape looks like when your are creating the root reducer or any slice reducer.  
 
-Keep in mind that you could use nestedCombineReducers to create a slice reducer that will be combined in a root reducer with the usual combineReducers.  
+You can also use `nestedCombineReducers` to create a slice reducer that will be combined in a root reducer with the usual combineReducers.  
 nestedCombineReducers is not meant to be used only to create the root reducer.  
 
 # Requirements
+
 Minimum ECMAScript version required is ECMAScript 2015 (ES6).  
 Provides typings for Typescript and it is also written in Typescript.  
 
 # How do I use it ?
+
 Import *nestedCombineReducers* from 'nested-combine-reducers'.  
 Import a combineReducers function from some library.  
-Call nestedCombineReducers passing in your reducers map and your combineReducers function.  
+Call `nestedCombineReducers` passing in your reducers map and your combineReducers function.  
 
 Code example using ECMAScript 2015 (ES6) modules:
 
@@ -115,6 +119,17 @@ const someNestedReducersMap = {
 
 const rootReducer = nestedCombineReducers(someNestedReducersMap, combineReducers);
 ```
+
 # Limitations
-The first obvious limitation is that for **very** deeply nested objects the recursive approach of nestedCombineReducers will ultimately fails with a stack overflow error, although the chances that you might encounter or create such complicated state shape are very low.  
-Another limitation is that circular references in the reducers map will also lead to a stack overflow errors, but having circular references in your state tree is not supported by any Redux like library that I know of.
+
+Circular references in the reducers map will eventually lead to a stack overflow or memory overflow.  
+Usually having circular references in your state tree is not supported by any Redux like library that I know of, so there shouldn't be any problems.
+
+#Infinite depth
+
+This library exposes an `infinteCombineReducers` utility that is capable of handling very large and deeply nested reducer maps.  
+Although I find it questionable to have reducer maps *that* big, it was a fun exercise to implement.  
+The implementation is identical and rewrites the recursion using loops and manual stack management.
+
+There should never be a reason to use this version as you should never have structures that big.
+Note that the iterative version is slower that the traditional version [as you can see here](https://jsperf.com/rvnrcombo/).
