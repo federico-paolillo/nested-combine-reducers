@@ -125,7 +125,7 @@ const rootReducer = nestedCombineReducers(someNestedReducersMap, combineReducers
 Circular references in the reducers map will eventually lead to a stack overflow or memory overflow.  
 Usually having circular references in your state tree is not supported by any Redux like library that I know of, so there shouldn't be any problems.
 
-#Infinite depth
+# Infinite depth
 
 This library exposes an `infinteCombineReducers` utility that is capable of handling very large and deeply nested reducer maps.  
 Although I find it questionable to have reducer maps *that* big, it was a fun exercise to implement.  
