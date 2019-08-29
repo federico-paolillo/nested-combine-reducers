@@ -1,6 +1,6 @@
 {
   "name": "nested-combine-reducers",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Adds support for nesting in combineReducers utility method from Redux",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
