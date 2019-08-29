@@ -3,6 +3,6 @@ wallaby.js
 package-lock.json
 .travis.yml
 *.spec.js
-*.map.js
+*.map
 *.spec.d.ts
 tsconfig*.json
