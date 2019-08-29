@@ -7,7 +7,8 @@
   "scripts": {
     "tsc": "tsc",
     "build": "tsc --project tsconfig.publishing.json",
-    "test": "tsc --project tsconfig.tests.json && mocha dist/index.spec.js"
+    "build-tests": "tsc --project tsconfig.tests.json",
+    "test": "npm run build-tests && mocha dist/index.spec.js"
   },
   "repository": {
     "url": "https://github.com/federico-paolillo/nested-combine-reducers.git",
