@@ -2,10 +2,10 @@ module.exports = function (wallaby) {
 
     return {
         files: [
-            'src/*.ts',
+            'src/index.ts',
         ],
         tests: [
-            'test/*.ts'
+            'test/test.ts'
         ],
         env: {
             type: 'node'

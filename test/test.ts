@@ -1,4 +1,3 @@
-import { combineReducers as reduxCombineReducers } from 'redux';
 import { nestedCombineReducers } from '../src/index';
 
 test('Ignores null or undefined properties on the nested Reducers Map', function () {
@@ -13,7 +12,7 @@ test('Ignores null or undefined properties on the nested Reducers Map', function
         moreSlices: null
     };
 
-    const rootReducer = nestedCombineReducers(nestedReducersMap, reduxCombineReducers);
+    const rootReducer = nestedCombineReducers(nestedReducersMap);
 
     const expectedState = {
         slice: {
@@ -42,7 +41,7 @@ test('Creates a root Reducer from a nested map using combineReducers from Redux'
         }
     };
 
-    const rootReducer = nestedCombineReducers(nestedReducersMap, reduxCombineReducers);
+    const rootReducer = nestedCombineReducers(nestedReducersMap);
 
     const expectedState = {
         slice: {
@@ -53,7 +52,16 @@ test('Creates a root Reducer from a nested map using combineReducers from Redux'
         }
     };
 
-    const computedState = rootReducer({}, { type: 'FAKE' });
+    const initialState = {
+        slice: {
+            deepSlice: {
+                deeperSlice: undefined,
+                anotherDeeperSlice: undefined
+            }
+        }
+    };
+    
+    const computedState = rootReducer(initialState, { type: 'FAKE' });
 
     expect(computedState).toEqual(expectedState);
 
@@ -66,35 +74,27 @@ test('Creates a root Reducer correctly when there is no nesting', function () {
         anotherSlice: () => 'Another slice'
     };
 
-    const rootReducer = nestedCombineReducers(simpleReducersMap, reduxCombineReducers);
+    const rootReducer = nestedCombineReducers(simpleReducersMap);
 
     const expectedState = {
         slice: 'Slice',
         anotherSlice: 'Another slice'
     };
 
-    const computedState = rootReducer({}, { type: 'Fake' });
-
-    expect(computedState).toEqual(expectedState);
-});
-
-test('Throws an error when the combineReducers function is undefined', function () {
-
-    const simpleReducersMap = {
-        slice: () => 'Slice',
-        anotherSlice: () => 'Another slice'
+    const initialState = {
+        slice: undefined,
+        anotherSlice: undefined
     };
 
-    const undefinedReducersFn: any = undefined;
+    const computedState = rootReducer(initialState, { type: 'Fake' });
 
-    expect(() => nestedCombineReducers(simpleReducersMap, undefinedReducersFn)).toThrow();
-
+    expect(computedState).toEqual(expectedState);
 });
 
 test('Throws an error when the reducers map is undefined', function () {
 
     const undefinedReducersMap: any = undefined;
 
-    expect(() => nestedCombineReducers(undefinedReducersMap, reduxCombineReducers)).toThrow();
+    expect(() => nestedCombineReducers(undefinedReducersMap)).toThrow();
 
 });
