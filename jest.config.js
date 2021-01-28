@@ -8,7 +8,7 @@ module.exports = {
     ],
     roots: [
         "<rootDir>/dist/src/",
-        "<rootDir>/dist/test/"
+        "<rootDir>/dist/test/"  
     ],
     testEnvironment: 'node',
     coverageThreshold: {

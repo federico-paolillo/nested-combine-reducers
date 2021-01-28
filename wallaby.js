@@ -3,6 +3,7 @@ module.exports = function (wallaby) {
     return {
         files: [
             'src/index.ts',
+            'jest.config.js'
         ],
         tests: [
             'test/test.ts'
@@ -14,13 +15,28 @@ module.exports = function (wallaby) {
         testFramework: "jest",
         reportConsoleErrorAsErrors: true,
         reportUnhandledPromises: true,
-        //Root project tsconfig.json transpiles to ES Modules which are not supported by Jest natively
+        //Project root tsconfig.json transpiles to ES Modules which are not supported by Jest natively
         //We change only that option here to commonjs to allow test execution without hassle
         compilers: {
             '**/*.ts': wallaby.compilers.typeScript({
-                module: 'commonjs'
+                module: 'commonjs',
             })
         },
-        runMode: 'onsave'
+        setup: function(wallaby) {
+
+            const settings = require('./jest.config');
+
+            //Project root jest.config.js points to the dist/ folder where the TypeScript output is
+            //Because Wallaby.js changes the compilation output folder we have to reset the Jest roots
+            //This allows test execution in the Wallaby.js env.
+            settings.roots = [
+                "<rootDir>/src/",
+                "<rootDir>/test/"
+            ];
+
+            wallaby.testFramework.configure(settings);
+
+        },
+        runMode: 'onsave',
     };
 };

@@ -55,8 +55,8 @@ test('Creates a root Reducer from a nested map using combineReducers from Redux'
     const initialState = {
         slice: {
             deepSlice: {
-                deeperSlice: undefined,
-                anotherDeeperSlice: undefined
+                deeperSlice: 'initial-value',
+                anotherDeeperSlice: 'initial-value'
             }
         }
     };
@@ -82,8 +82,8 @@ test('Creates a root Reducer correctly when there is no nesting', function () {
     };
 
     const initialState = {
-        slice: undefined,
-        anotherSlice: undefined
+        slice: 'initial-state',
+        anotherSlice: 'initial-state'
     };
 
     const computedState = rootReducer(initialState, { type: 'Fake' });
@@ -94,6 +94,14 @@ test('Creates a root Reducer correctly when there is no nesting', function () {
 test('Throws an error when the reducers map is undefined', function () {
 
     const undefinedReducersMap: any = undefined;
+
+    expect(() => nestedCombineReducers(undefinedReducersMap)).toThrow();
+
+});
+
+test('Throws an error when the reducers map is null', function () {
+
+    const undefinedReducersMap: any = null;
 
     expect(() => nestedCombineReducers(undefinedReducersMap)).toThrow();
 
