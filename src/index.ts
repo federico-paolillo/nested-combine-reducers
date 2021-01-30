@@ -1,73 +1,62 @@
 import { Action, Reducer, combineReducers, CombinedState, ReducersMapObject } from "redux";
 
 /**
- * Types of the possibile values of RecursiveReducersMapObject
+ * Union of all the allowed types of a RecursiveReducersMapObject
  */
-export type RecursiveReducersMapProperty<S, A extends Action = Action> =
-    Reducer<S, A> |
-    RecursiveReducersMapObject<S, A> |
-    null |
+export type RecursiveReducersMapObjectProperty<TState = any, TAction extends Action = Action> = 
+    Reducer<TState, TAction> |
+    RecursiveReducersMapObject<TState, TAction> | 
+    null | 
     undefined;
 
 /**
  * A ReducersMapObject with multiple levels of nesting
  */
-export type RecursiveReducersMapObject<S = any, A extends Action = Action> = {
-    [K in keyof S]: RecursiveReducersMapProperty<S[K], A>;
-}
-
-type PlainRecursiveReducersMapObjectProperty =
-    Reducer<unknown, Action> |
-    RecursiveReducersMapObject<unknown, Action> |
-    null |
-    undefined;
-
-/**
- * A RecursiveReducersMapObject with properties accesible using strings
- */
-type PlainRecursiveReducersMapObject = {
-    [key: string]: PlainRecursiveReducersMapObjectProperty
+export type RecursiveReducersMapObject<TState = any, TAction extends Action = Action> = {
+    [Key in keyof TState]: RecursiveReducersMapObjectProperty<TState[Key], TAction>;
 }
 
 /**
  * Takes a Reducers maps with multiple levels of nesting and turns it into in a single reducing function.
  * 
  * @param map An object whose values are either reducing functions or other objects
- * @param combineReducersFn combineReducers compatible function provided by your library of choice
  */
-export function nestedCombineReducers<S = any, A extends Action = Action>(
-    map: RecursiveReducersMapObject<S, A>
-): Reducer<CombinedState<S>, A> {
+export function nestedCombineReducers<TState = any, TAction extends Action = Action>(
+    map: RecursiveReducersMapObject<TState, TAction>
+): Reducer<CombinedState<TState>, TAction> {
 
     if (!map) throw new Error('You must specify a reducers map.');
 
     const flatReducersMapObject: ReducersMapObject = {};
 
-    const mapKeys = Object.keys(map);
+    const recursiveMapKeys = Object.keys(map) as (keyof TState)[];
 
-    //Enable string property accessors by type casting
-    const plainMap = map as PlainRecursiveReducersMapObject;
+    for (const recursiveMapKey of recursiveMapKeys) {
 
-    for (const mapKey of mapKeys) {
+        const recursiveMapValue = map[recursiveMapKey];
 
-        const propValue = plainMap[mapKey];
-
-        if (propValue === null) {
+        if (recursiveMapValue === null) {
             continue;
         }
 
-        if (propValue === undefined) {
+        if (recursiveMapValue === undefined) {
             continue;
         }
 
         //Hopefully a reducer function, let's store it to combine it later
-        if (typeof propValue === 'function') {
-            flatReducersMapObject[mapKey] = propValue as Reducer;
+        if (typeof recursiveMapValue === 'function') {
+
+            const reducer = recursiveMapValue as Reducer;
+
+            flatReducersMapObject[recursiveMapKey] = reducer;
         }
 
         //Nesting found, let's go deeper !
-        if (typeof propValue === 'object') {
-            flatReducersMapObject[mapKey] = nestedCombineReducers(propValue);
+        if (typeof recursiveMapValue === 'object') {
+
+            const nestedRecursiveReducersMapObject = recursiveMapValue as RecursiveReducersMapObject;
+
+            flatReducersMapObject[recursiveMapKey] = nestedCombineReducers(nestedRecursiveReducersMapObject);
         }
 
     }
