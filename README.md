@@ -1,13 +1,12 @@
-[![MIT License](https://img.shields.io/github/license/federico-paolillo/nested-combine-reducers.svg?style=flat-square)](https://github.com/federico-paolillo/nested-combine-reducers/blob/master/LICENSE)
-[![Travis branch](https://img.shields.io/travis/federico-paolillo/nested-combine-reducers/master.svg?style=flat-square)](https://travis-ci.org/federico-paolillo/nested-combine-reducers)
-[![NPM](https://img.shields.io/npm/v/nested-combine-reducers.svg?style=flat-square)](https://www.npmjs.com/package/nested-combine-reducers)
+![GitHub](https://img.shields.io/github/license/federico-paolillo/nested-combine-reducers?style=flat-square)
+![Codecov](https://img.shields.io/codecov/c/github/federico-paolillo/nested-combine-reducers?style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/federico-paolillo/nested-combine-reducers/continuous-integration?label=CI&style=flat-square)  
 
 # nested-combine-reducers
 
-Adds support for nesting in any compatible combineReducers function.  
-No dependencies and no assumptions on which Redux-like library you are using.  
+Allows you to create your root reducer in one go, instead of individually combine slice reducers.  
 
-# Why ?
+# Introduction
 
 Tipically you divide your state tree in multiple slices, each handled by its own reducer.  
 For example:
@@ -38,11 +37,12 @@ const rootReducer = combineReducers({
 });
 ```
 
-As you can see you have to call manually `combineReducers` multiple times, *potentially losing the overview of your state shape*.  
-In fact from the example above it is not immediately clear what the state shape looks like.  
-This library tries to simplify this workflow by allowing you to use directly a reducers map with nested reducing functions.  
+As you can see you have to call `combineReducers` multiple times, *potentially losing the overview of your state shape*.  
+In fact, from the example above, it is not immediately clear what the state shape looks like.  
 
-The example above with nestedCombineReducers would become:
+This library tries to simplify the creation process of the root reducer by allowing to use a reducers map with nested reducing functions.  
+
+The example above using `nestedCombineReducers` would become:
 
 ```javascript
 const rootReducer = nestedCombineReducers({
@@ -53,83 +53,43 @@ const rootReducer = nestedCombineReducers({
         },
         comments: ...
     }
-}, combineReducers);
+});
 ```
 
-With `nestedCombineReducers` it should be a bit more clear what the state shape looks like when your are creating the root reducer or any slice reducer.  
+Thanks to `nestedCombineReducers` it is immediately clear what the state shape looks like when your are creating your root reducer.  
+You can also use `nestedCombineReducers` to create just a slice and then create the rest of your root reducer with `combineReducer`.  
 
-You can also use `nestedCombineReducers` to create a slice reducer that will be combined in a root reducer with the usual combineReducers.  
-nestedCombineReducers is not meant to be used only to create the root reducer.  
+# Usage
 
-# Requirements
-
-Minimum ECMAScript version required is ECMAScript 2015 (ES6).  
-Provides typings for Typescript and it is also written in Typescript.  
-
-# How do I use it ?
-
-Import *nestedCombineReducers* from 'nested-combine-reducers'.  
-Import a combineReducers function from some library.  
-Call `nestedCombineReducers` passing in your reducers map and your combineReducers function.  
-
-Code example using ECMAScript 2015 (ES6) modules:
+Simply pass your reducers map object to `nestedCombineReducers` to get back your root reducer, like so:  
 
 ```javascript
-import { combineReducers } from 'redux';
-import { nestedCombineReducers } from 'nested-combine-reducers';
-
-const someNestedReducersMap = {
-    ui: {
-        spinner: spinnerReducer
-    },
+const rootReducer = nestedCombineReducers({
     data: {
         posts: {
-            items: postItemsReducer,
+            items: itemsReducer,
             favourites: favouritePostsReducer
         },
-        comments: {
-            ...
-        }
+        comments: ...
     }
-}
-
-const rootReducer = nestedCombineReducers(someNestedReducersMap, combineReducers);
+});
 ```
 
-Code example using CommonJS:
+## With CommonJS
 
-```javascript
-const { combineReducers } = require('redux');
-const { nestedCombineReducers } = require('nested-combine-reducers');
+const { nestedCombineReducers } = require('nested-combine-reducers/cjs');
 
-const someNestedReducersMap = {
-    ui: {
-        spinner: spinnerReducer
-    },
-    data: {
-        posts: {
-            items: postItemsReducer,
-            favourites: favouritePostsReducer
-        },
-        comments: {
-            ...
-        }
-    }
-}
+**Note:** Import from /cjs folder !
 
-const rootReducer = nestedCombineReducers(someNestedReducersMap, combineReducers);
-```
+## With ES Modules
 
-# Limitations
+import { nestedCombineReducers } from 'nested-combine-reducers'
 
-Circular references in the reducers map will eventually lead to a stack overflow or memory overflow.  
-Usually having circular references in your state tree is not supported by any Redux like library that I know of, so there shouldn't be any problems.
+# Installation
 
-# Infinite depth
+**Note:** This library requires at least Redux 4. 
 
-This library exposes an `infinteCombineReducers` utility that is capable of handling very large and deeply nested reducer maps.  
-Although I find it questionable to have reducer maps *that* big, it was a fun exercise to implement.  
-The implementation is identical and rewrites the recursion using loops and manual stack management.
-
-There should never be a reason to use this version as you should never have structures that big.
-Note that the iterative version is slower that the traditional version [as you can see here](https://jsperf.com/rvnrcombo/).
+You can get `nestedCombineReducers` from NPM by running `npm install nested-combine-reducers`.  
+The NPM package is hybrid, that means that you get both the ES Modules and the CommonJS version.  
+`nestedCombineReducers` is written in TypeScript and typings are provided with the package.  
+Frankly, I'm not a fan of having small utility functions installed as a dependency, therefore I suggest to simply copy/paste the function.  
