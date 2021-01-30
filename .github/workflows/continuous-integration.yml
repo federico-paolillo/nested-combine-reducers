@@ -1,0 +1,26 @@
+on:
+  push:
+    branches: 
+      - *
+    tags-ignore: 
+      -'v*.*.*'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '15'
+      - name: Install
+        run: npm install
+      - name: Test
+        run: npm test
+      - name: Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          files: 'codecov/lcov.info'
+          fail_ci_if_error: true
+          name: 'nested-combine-reducers Coverage'

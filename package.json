@@ -9,7 +9,6 @@
   "scripts": {
     "pretest": "npm run clean:all && npm run build:test",
     "test": "jest",
-    "posttest": "npm run clean:all",
     "clean:all": "npm run clean:build && npm run clean:codecov",
     "clean:build": "rimraf dist/",
     "clean:codecov": "rimraf codecov/",
